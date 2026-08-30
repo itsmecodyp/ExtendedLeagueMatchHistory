@@ -1,0 +1,154 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:models="using:testclient2.League.Models"
+    x:Class="testclient2.FriendsPanel"
+    Width="200"
+    Height="600"
+    SystemDecorations="None"
+    ShowInTaskbar="False"
+    CanResize="False"
+    Topmost="True"
+    Background="#232323">
+    <Window.Resources>
+
+    <SolidColorBrush
+        x:Key="StatusInGame"
+        Color="#E05A5A"/>
+
+    <SolidColorBrush
+        x:Key="StatusOnline"
+        Color="#5AC878"/>
+
+    <SolidColorBrush
+        x:Key="StatusMobile"
+        Color="#5AA9E0"/>
+
+    <SolidColorBrush
+        x:Key="StatusAway"
+        Color="#D0A94A"/>
+
+    <SolidColorBrush
+        x:Key="StatusOffline"
+        Color="#666666"/>
+
+</Window.Resources>
+    <Border
+        BorderBrush="#505050"
+        BorderThickness="1">
+
+<Grid RowDefinitions="40,40,*">
+            <!-- Header -->
+
+         <Border
+    Grid.Row="0"
+    Background="#191919">
+
+    <Grid ColumnDefinitions="*,40">
+
+        <TextBlock
+            Grid.Column="0"
+            Text="Friends"
+            Foreground="White"
+            FontSize="14"
+            FontWeight="Bold"
+            VerticalAlignment="Center"
+            Margin="12,0"/>
+
+        <Button
+            x:Name="CollapseButton"
+            Grid.Column="1"
+            Content="−"
+            Background="Transparent"
+            Foreground="White"
+            BorderThickness="0"/>
+
+    </Grid>
+
+</Border>
+
+    <Border
+    Grid.Row="1"
+    Background="#202020"
+    Padding="10,0">
+
+    <CheckBox
+        x:Name="OfflineToggle"
+        Content="Show Offline"
+        Foreground="#AAAAAA"
+        VerticalAlignment="Center"
+        Click="OfflineToggle_Click"/>
+
+</Border>
+            <!-- Friends -->
+
+<Border
+    x:Name="ExpandedContent"
+    Grid.Row="2">
+
+    <ScrollViewer
+        VerticalScrollBarVisibility="Auto">
+
+        <ItemsControl
+            x:Name="FriendsList">
+
+            <ItemsControl.ItemTemplate>
+
+              <DataTemplate
+    x:DataType="models:LeagueFriend">
+
+<Button
+    Padding="0"
+    Background="Transparent"
+    BorderThickness="0"
+    HorizontalContentAlignment="Stretch"
+    Click="Friend_Click">
+
+    <Border
+        Padding="10,7">
+
+        <Grid ColumnDefinitions="20,*">
+
+            <TextBlock
+                Grid.Column="0"
+                Text="{Binding StatusSymbol}"
+                Foreground="{Binding StatusColor}"
+                FontSize="14"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"/>
+
+            <StackPanel
+                Grid.Column="1"
+                Margin="5,0,0,0">
+
+                <TextBlock
+                    Text="{Binding DisplayName}"
+                    Foreground="White"
+                    FontSize="13"/>
+
+                <TextBlock
+                    Text="{Binding GameInfoDisplay}"
+                    Foreground="#888888"
+                    FontSize="11"/>
+
+            </StackPanel>
+
+        </Grid>
+
+    </Border>
+
+</Button>
+</DataTemplate>
+
+            </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+    </ScrollViewer>
+
+</Border>
+        </Grid>
+
+    </Border>
+
+</Window>

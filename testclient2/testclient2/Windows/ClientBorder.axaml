@@ -1,0 +1,18 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="testclient2.ClientBorder"
+    SystemDecorations="None"
+    ShowInTaskbar="False"
+    CanResize="False"
+    Topmost="True"
+    Background="Transparent">
+
+    <Border
+        BorderBrush="#787878"
+        BorderThickness="2"
+        Background="Transparent">
+
+    </Border>
+
+</Window>

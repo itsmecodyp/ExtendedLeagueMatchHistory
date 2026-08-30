@@ -1,0 +1,171 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:models="using:testclient2.League.Models"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="testclient2.Windows.MatchHistoryPanel"
+    Width="800"
+    Height="150"
+    SystemDecorations="None"
+    ShowInTaskbar="False"
+    CanResize="False"
+    Topmost="True"
+    Background="#232323">
+
+    <Window.Styles>
+
+        <Style Selector="Border.matchCard">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.1"/>
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="Border.matchCard:pointerover">
+            <Setter Property="Opacity" Value="0.75"/>
+        </Style>
+
+    </Window.Styles>
+
+    <Border
+        BorderBrush="#505050"
+        BorderThickness="1">
+
+        <Grid RowDefinitions="35,*">
+
+            <!-- Header -->
+
+            <Border
+                Grid.Row="0"
+                Background="#191919">
+
+                <TextBlock
+                    x:Name="PlayerNameText"
+                    Text="Match History"
+                    Foreground="White"
+                    FontSize="13"
+                    FontWeight="Bold"
+                    VerticalAlignment="Center"
+                    Margin="10,0"/>
+
+            </Border>
+
+            <!-- History -->
+
+            <Grid
+                Grid.Row="1"
+                ColumnDefinitions="120,*">
+
+                <!-- Win/Loss summary -->
+
+                <Border
+                    Grid.Column="0"
+                    Background="#202020"
+                    BorderBrush="#404040"
+                    BorderThickness="0,0,1,0">
+
+                    <StackPanel
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+
+                        <TextBlock
+                            x:Name="WinsText"
+                            Foreground="#5AC878"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"/>
+
+                        <TextBlock
+                            x:Name="LossesText"
+                            Foreground="#E05A5A"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            HorizontalAlignment="Center"/>
+
+                    </StackPanel>
+
+                </Border>
+
+                <!-- Games -->
+
+                <ScrollViewer
+                    Grid.Column="1"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Hidden">
+
+                    <ItemsControl
+                        x:Name="GamesList">
+
+                        <ItemsControl.ItemsPanel>
+
+                            <ItemsPanelTemplate>
+
+                                <StackPanel
+                                    Orientation="Horizontal"/>
+
+                            </ItemsPanelTemplate>
+
+                        </ItemsControl.ItemsPanel>
+
+                       <ItemsControl.ItemTemplate>
+
+                        <DataTemplate
+                            x:DataType="models:MatchHistoryEntry">
+
+                            <Border
+                                Classes="matchCard"
+                                Width="90"
+                                Height="85"
+                                Margin="5,5,0,5"
+                                Background="{Binding Background}"
+                                CornerRadius="3"
+                                Tag="{Binding GameId}"
+                                ToolTip.Tip="Open on leagueofgraphs.com"
+                                PointerPressed="MatchCard_PointerPressed">
+
+                                <StackPanel
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+
+                                    <TextBlock
+                                        Text="{Binding ChampionName}"
+                                        Foreground="White"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap"
+                                        MaxWidth="80"
+                                        HorizontalAlignment="Center"/>
+
+                                    <TextBlock
+                                        Text="{Binding KdaText}"
+                                        Foreground="White"
+                                        FontSize="12"
+                                        HorizontalAlignment="Center"/>
+
+                                    <TextBlock
+                                        Text="{Binding KdaRatioText}"
+                                        Foreground="#BBBBBB"
+                                        FontSize="11"
+                                        HorizontalAlignment="Center"/>
+
+                                    </StackPanel>
+
+                                </Border>
+
+                            </DataTemplate>
+
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </ScrollViewer>
+
+            </Grid>
+
+        </Grid>
+
+    </Border>
+
+</Window>
