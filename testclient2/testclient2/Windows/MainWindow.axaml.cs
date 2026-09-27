@@ -229,7 +229,7 @@ public partial class MainWindow : Window
             int friendsWidth =
                 friendsPanel?.Width > 100
                     ? 200
-                    : 45;
+                    : 85;
 
             matchHistoryPanel.Position = new PixelPoint(
       rect.Left,

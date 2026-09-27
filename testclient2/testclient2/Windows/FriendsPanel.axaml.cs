@@ -14,7 +14,7 @@ namespace testclient2;
 public partial class FriendsPanel : Window
 {
     private const double ExpandedWidth = 200;
-    private const double CollapsedWidth = 45;
+    private const double CollapsedWidth = 85;
     public event Action<LeagueFriend?>? HistoryTargetChanged;
     private bool isCollapsed;
     private LeagueFriend? selectedFriend;
@@ -77,6 +77,12 @@ LeagueFriend friend)
         InitializeComponent();
 
         CollapseButton.Click += CollapseButton_Click;
+        CloseButton.Click += CloseButton_Click;
+    }
+
+    private void CloseButton_Click(object? sender, RoutedEventArgs e)
+    {
+        Environment.Exit(0);
     }
     private List<LeagueFriend> allFriends = new();
 

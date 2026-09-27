@@ -44,7 +44,7 @@
     Grid.Row="0"
     Background="#191919">
 
-    <Grid ColumnDefinitions="*,40">
+    <Grid ColumnDefinitions="*,40,40">
 
         <TextBlock
             Grid.Column="0"
@@ -59,6 +59,14 @@
             x:Name="CollapseButton"
             Grid.Column="1"
             Content="−"
+            Background="Transparent"
+            Foreground="White"
+            BorderThickness="0"/>
+
+        <Button
+            x:Name="CloseButton"
+            Grid.Column="2"
+            Content="X"
             Background="Transparent"
             Foreground="White"
             BorderThickness="0"/>
