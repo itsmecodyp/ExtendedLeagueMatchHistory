@@ -37,6 +37,8 @@ public partial class MatchHistoryPanel : Window
         PlayerNameText.Text =
             $"{displayName} - Match History";
 
+        LoadingProgressBar.IsVisible = true;
+
         try
         {
             MatchHistoryCacheData cache =
@@ -86,6 +88,10 @@ public partial class MatchHistoryPanel : Window
         {
             Debug.WriteLine(
                 $"Failed to load match history: {ex}");
+        }
+        finally
+        {
+            LoadingProgressBar.IsVisible = false;
         }
     }
 
