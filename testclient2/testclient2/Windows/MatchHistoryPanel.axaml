@@ -34,6 +34,18 @@
 
         <Grid RowDefinitions="35,*">
 
+            <ProgressBar
+                x:Name="LoadingProgressBar"
+                Grid.RowSpan="2"
+                IsIndeterminate="True"
+                IsVisible="False"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Foreground="#353535"
+                Background="Transparent"
+                BorderThickness="0"
+                CornerRadius="0"/>
+
             <!-- Header -->
 
             <Border
