@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using testclient2.League;
 using testclient2.League.Models;
 
@@ -25,6 +26,10 @@ public partial class MatchHistoryPanel : Window
     // games might have finished since we last checked.
     private const double MinutesPerGameEstimate = 30;
 
+    private DispatcherTimer? _progressTimer;
+    private double _targetProgressWidth = 0;
+    private long _currentLoadId = 0;
+
     public MatchHistoryPanel()
     {
         InitializeComponent();
@@ -36,6 +41,31 @@ public partial class MatchHistoryPanel : Window
     {
         PlayerNameText.Text =
             $"{displayName} - Match History";
+
+        long loadId = DateTime.UtcNow.Ticks;
+        _currentLoadId = loadId;
+
+        // Start progress
+        ProgressBarBackground.Width = 0;
+        _targetProgressWidth = this.Bounds.Width * 0.95; // target 95% width
+
+        if (_progressTimer == null)
+        {
+            _progressTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(50)
+            };
+            _progressTimer.Tick += (s, e) =>
+            {
+                if (ProgressBarBackground.Width < _targetProgressWidth)
+                {
+                    double remaining = _targetProgressWidth - ProgressBarBackground.Width;
+                    ProgressBarBackground.Width += Math.Max(1, remaining * 0.05); // Ease towards 95%
+                }
+            };
+        }
+
+        _progressTimer.Start();
 
         try
         {
@@ -86,6 +116,29 @@ public partial class MatchHistoryPanel : Window
         {
             Debug.WriteLine(
                 $"Failed to load match history: {ex}");
+        }
+        finally
+        {
+            if (_currentLoadId == loadId)
+            {
+                _progressTimer?.Stop();
+
+                // Snap to 100% and fade out
+                ProgressBarBackground.Width = this.Bounds.Width;
+
+                // Keep it shown for a split second, then reset
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(300);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        if (_currentLoadId == loadId)
+                        {
+                            ProgressBarBackground.Width = 0;
+                        }
+                    });
+                });
+            }
         }
     }
 

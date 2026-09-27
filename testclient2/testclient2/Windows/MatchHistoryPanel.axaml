@@ -32,9 +32,24 @@
         BorderBrush="#505050"
         BorderThickness="1">
 
-        <Grid RowDefinitions="35,*">
+        <Panel>
 
-            <!-- Header -->
+            <!-- Progress Bar Background -->
+            <Border
+                x:Name="ProgressBarBackground"
+                Background="#3A4A5A"
+                HorizontalAlignment="Left"
+                Width="0">
+                <Border.Transitions>
+                    <Transitions>
+                        <DoubleTransition Property="Width" Duration="0:0:0.05" Easing="LinearEasing"/>
+                    </Transitions>
+                </Border.Transitions>
+            </Border>
+
+            <Grid RowDefinitions="35,*">
+
+                <!-- Header -->
 
             <Border
                 Grid.Row="0"
@@ -162,9 +177,11 @@
 
                 </ScrollViewer>
 
+                </Grid>
+
             </Grid>
 
-        </Grid>
+        </Panel>
 
     </Border>
 
