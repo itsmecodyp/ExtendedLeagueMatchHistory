@@ -14,12 +14,15 @@ namespace testclient2.Windows;
 public partial class MatchHistoryPanel : Window
 {
     // First time we see a player, grab a big batch to seed the cache.
-    private const int InitialFetchCount = 200;
+    private const int InitialFetchCount = 10;
 
     // Never ask the LCU for more than this many games in one request.
-    private const int MaxFetchCount = 200;
+    private const int MaxFetchCount = 20;
 
     private const int MinFetchCount = 1;
+
+    // How many older games to fetch when continuing backwards.
+    private const int BackfillFetchCount = 10;
 
     // Roughly how long an average game takes - used to estimate how many
     // games might have finished since we last checked.
@@ -68,6 +71,25 @@ public partial class MatchHistoryPanel : Window
                     cache,
                     freshEntries);
 
+                if (cache.BackfillIndex == 0)
+                {
+                    cache.BackfillIndex = Math.Max(gamesToFetch, cache.Entries.Count);
+                }
+                else
+                {
+                    cache.BackfillIndex += added;
+                }
+
+                // Repair mechanism: If the BackfillIndex is somehow smaller than the number of entries
+                // we have cached (for instance, an old cache that had 200 items before we added backfilling,
+                // or a broken state), jump the index to the end so we don't re-request known games,
+                // and clear the complete flag so it attempts to fetch older games.
+                if (cache.BackfillIndex < cache.Entries.Count)
+                {
+                    cache.BackfillIndex = cache.Entries.Count;
+                    cache.BackfillComplete = false;
+                }
+
                 Debug.WriteLine(
                     $"Added {added} new match(es) to cache for {displayName}");
             }
@@ -83,6 +105,34 @@ public partial class MatchHistoryPanel : Window
             await MatchHistoryCacheService.SaveAsync(puuid, cache);
 
             DisplayEntries(cache.Entries);
+
+            if (!cache.BackfillComplete && cache.BackfillIndex > 0)
+            {
+                Debug.WriteLine($"Continuing backfill for {displayName} from index {cache.BackfillIndex}");
+                string? backfillJson = await MainWindow.leagueClient.GetFriendMatchHistoryAsync(
+                    puuid,
+                    cache.BackfillIndex,
+                    cache.BackfillIndex + BackfillFetchCount);
+
+                if (!string.IsNullOrWhiteSpace(backfillJson))
+                {
+                    List<MatchHistoryEntry> backfillEntries = await ParseEntriesAsync(backfillJson);
+                    int addedBackfill = MatchHistoryCacheService.MergeEntries(cache, backfillEntries);
+
+                    if (backfillEntries.Count < BackfillFetchCount)
+                    {
+                        cache.BackfillComplete = true;
+                        Debug.WriteLine($"Backfill complete for {displayName}.");
+                    }
+                    else
+                    {
+                        cache.BackfillIndex += BackfillFetchCount;
+                    }
+
+                    await MatchHistoryCacheService.SaveAsync(puuid, cache);
+                    DisplayEntries(cache.Entries);
+                }
+            }
         }
         catch (Exception ex)
         {
