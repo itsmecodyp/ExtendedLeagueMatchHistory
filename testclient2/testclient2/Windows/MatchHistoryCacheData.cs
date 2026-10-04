@@ -12,5 +12,9 @@ namespace testclient2.League.Models
         public DateTime LastCheckedUtc { get; set; }
 
         public List<MatchHistoryEntry> Entries { get; set; } = new();
+
+        public int BackfillIndex { get; set; } = 0;
+
+        public bool BackfillComplete { get; set; } = false;
     }
 }
