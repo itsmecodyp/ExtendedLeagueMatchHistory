@@ -80,6 +80,16 @@ public partial class MatchHistoryPanel : Window
                     cache.BackfillIndex += added;
                 }
 
+                // Repair mechanism: If the BackfillIndex is somehow smaller than the number of entries
+                // we have cached (for instance, an old cache that had 200 items before we added backfilling,
+                // or a broken state), jump the index to the end so we don't re-request known games,
+                // and clear the complete flag so it attempts to fetch older games.
+                if (cache.BackfillIndex < cache.Entries.Count)
+                {
+                    cache.BackfillIndex = cache.Entries.Count;
+                    cache.BackfillComplete = false;
+                }
+
                 Debug.WriteLine(
                     $"Added {added} new match(es) to cache for {displayName}");
             }
@@ -102,7 +112,7 @@ public partial class MatchHistoryPanel : Window
                 string? backfillJson = await MainWindow.leagueClient.GetFriendMatchHistoryAsync(
                     puuid,
                     cache.BackfillIndex,
-                    cache.BackfillIndex + BackfillFetchCount - 1);
+                    cache.BackfillIndex + BackfillFetchCount);
 
                 if (!string.IsNullOrWhiteSpace(backfillJson))
                 {
